@@ -43,8 +43,3 @@ class PlayerNode:
     @property
     def key(self) -> str:
         return self._player.uid
-
-
-
-
-

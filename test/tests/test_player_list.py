@@ -128,4 +128,3 @@ class TestPlayerListClass(unittest.TestCase):
     def test_delete_by_key_on_empty_list(self):
         """Test that delete_player_node_by_key raises an error when called on an empty list"""
         self.assertRaises(ValueError, self.test_list.delete_player_node_by_key, "12345689")
-

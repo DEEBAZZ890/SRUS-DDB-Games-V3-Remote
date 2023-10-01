@@ -121,7 +121,3 @@ class PlayerList:
             return
 
         self.delete_middle_node_by_key(key)
-
-
-
-
