@@ -27,13 +27,16 @@ class TestPlayerClass(unittest.TestCase):
         self.assertIsNotNone(self.player._hashed_password)
 
     def test_add_empty_password_raises_error(self):
-        """Test that empty password raises a ValueError"""
         self.assertRaises(ValueError, self.player.add_password, "")
 
     def test_verify_password(self):
         self.player.add_password(self.sample_password)
         self.assertTrue(self.player.verify_password(self.sample_password))
         self.assertFalse(self.player.verify_password("wrongPassword"))
+
+    def test_verify_password_before_setting_raises_error(self):
+        """Test that verification fails if password has not been set"""
+        self.assertRaises(ValueError, self.player.verify_password, "anyPassword")
 
     def test_invalid_password_is_strictly_false(self):
         self.player.add_password(self.sample_password)

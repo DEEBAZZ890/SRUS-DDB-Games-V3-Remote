@@ -4,19 +4,19 @@ from argon2 import PasswordHasher, exceptions
 
 class Player:
     def __init__(self, uid: str, name: str) -> None:
-        self._uid = uid  # A unique id for the player
-        self._name = name  # The name of the player
-        self._hashed_password: Optional[str] = None  # stores the hashed version of the players password
+        self._uid = uid
+        self._name = name
+        self._hashed_password: Optional[str] = None
 
-    @property  # getter for uid
+    @property
     def uid(self) -> str:
         return self._uid
 
-    @property  # getter for name
+    @property
     def name(self) -> str:
         return self._name
 
-    def __str__(self) -> str:  # used to print readable string of the player object
+    def __str__(self) -> str:
         return f"UID:{self._uid} NAME: {self._name}"
 
     def __repr__(self) -> str:
@@ -24,6 +24,7 @@ class Player:
         return f'{class_name}(uid={self.uid!r}, name={self.name!r})'
 
     def add_password(self, password: str) -> None:
+        """Takes a password as a string and from it, generate a hash that is stored for the player"""
         if not password.strip():
             raise ValueError("No password entered. The player must have a password")
         else:
@@ -32,6 +33,9 @@ class Player:
             self._hashed_password = hash_value
 
     def verify_password(self, password: str) -> bool:
+        """Uses the stored hash of the player's password to verify if a password is correct"""
+        if self._hashed_password is None:
+            raise ValueError("No password has been set for this player")
         ph = PasswordHasher()
         try:
             ph.verify(self._hashed_password, password)

@@ -5,8 +5,8 @@ from typing import List, Optional
 
 class PlayerList:
     def __init__(self) -> None:
-        self._head = None  # represents the head/first node in the player list
-        self._tail = None  # represents the tail/last node in the player list
+        self._head = None
+        self._tail = None
 
     @property
     def head(self) -> Optional[PlayerNode]:
@@ -20,14 +20,16 @@ class PlayerList:
     def tail(self, new_node: Optional[PlayerNode]) -> None:
         self._tail = new_node
 
-    def __repr__(self) -> str:  # Raf hint for debugging and good practice
+    def __repr__(self) -> str:
         class_name = self.__class__.__name__
         return f'{class_name}(Player Nodes={self.to_list()})'
 
-    def is_empty(self) -> bool:  # used to check if list is empty i.e., contains no head player
+    def is_empty(self) -> bool:
+        """If no head is present, the list is empty"""
         return self._head is None
 
-    def to_list(self) -> List[str]:  # added in raf's class week 4
+    def to_list(self) -> List[str]:
+        """Returns a string repr of the linked list for each player"""
         my_list = []
         current_player = self._head
         while current_player:
@@ -35,9 +37,10 @@ class PlayerList:
             current_player = current_player.next_player
         return my_list
 
-    def display(self, forward=True) -> None:  # Displays all existing nodes, utilizing the str method of the player node class
+    def display(self, forward=True) -> None:
+        """Prints the contents of the linked list in a specified order"""
         if self.is_empty():
-            raise ValueError("Deletion failed. List is empty; No head node exists")
+            raise ValueError("List is empty")
         if forward:
             current = self._head
             while current is not None:
@@ -72,12 +75,26 @@ class PlayerList:
     def delete_head_node(self) -> None:
         if self.is_empty():
             raise ValueError("Deletion failed. List is empty; No head node exists")
+
         existing_head = self._head
         self._head = existing_head.next_player
+
         if self._head is None:
             self._tail = None
         else:
             self._head.previous_player = None
+
+    def delete_middle_node_by_key(self, key: str) -> None:
+        """Searches from the second node to the tail and deletes the matching player by key."""
+        player_node = self._head.next_player
+
+        while player_node is not None:
+            if player_node.key == key:
+                player_node.previous_player.next_player = player_node.next_player
+                player_node.next_player.previous_player = player_node.previous_player
+                return
+            player_node = player_node.next_player
+        raise ValueError(f"Player with UID: {key} not found. Deletion Failed")
 
     def delete_tail_node(self) -> None:
         if self._tail is None:
@@ -85,25 +102,26 @@ class PlayerList:
         else:
             existing_tail = self._tail
             self._tail = existing_tail.previous_player
+
             if self._tail is None:
                 self._head = None
             else:
                 self._tail.next_player = None
 
     def delete_player_node_by_key(self, key: str) -> None:
-        player_node = self._head
-        while player_node is not None:
-            if player_node.key == key:
-                deleted_player = player_node.player
-                if player_node.previous_player is None:
-                    self.delete_head_node()
-                elif player_node.next_player is None:
-                    self.delete_tail_node()
-                else:
-                    player_node.previous_player.next_player = player_node.next_player
-                    player_node.next_player.previous_player = player_node.previous_player
-                return deleted_player
-            player_node = player_node.next_player
+        if self.is_empty():
+            raise ValueError(f"List is empty. Cannot delete player with key {key}.")
 
-        raise ValueError(f"Failed to find player with {key} to delete. Deletion not successful")
+        if self._head.key == key:
+            self.delete_head_node()
+            return
+
+        if self._tail.key == key:
+            self.delete_tail_node()
+            return
+
+        self.delete_middle_node_by_key(key)
+
+
+
 
